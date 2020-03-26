@@ -11,7 +11,7 @@
 >>
 * **s3-uploader-[yyyyMMddHHmiss].jar :** jar for running s3-uploader
 * **run.sh :** Sample run shell script
-* **config :** log4j, s3.uploader preference file directory
+* **config :** log4j2, s3.uploader preference file directory
 * **lib :** Reference library jar file directory when executing s3-uploader (program is not recognized when changing)
 
 ## Execution
@@ -27,7 +27,7 @@
 * `-serverType <server type>` : Separator for configuration file branches
 
 >
-* When executed, the logs directory is created in the execution location and log files are saved. (Can be changed in log4j.xml settings)
+* When executed, the logs directory is created in the execution location and log files are saved. (Can be changed in log4j2.xml settings)
 
 ## JSON Settings Description
 
@@ -84,5 +84,5 @@
 ## Logging configuration
 
 >
-* Set to `"File Name : log4j.xml or log4j.[serverType].xml"` file under config path.
+* Set to `"File Name : log4j2.xml or log4j2.[serverType].xml"` file under config path.
 * If there is no log setting under the config path, the default log4j.xml setting set in the jar program is used.

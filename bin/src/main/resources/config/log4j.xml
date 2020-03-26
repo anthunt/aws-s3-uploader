@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration debug="true" xmlns:log4j="http://jakarta.apache.org/log4j/">
+       
+    <!-- ==================================================================================================== -->
+    <!-- Debug Console Appender -->
+    <!-- ==================================================================================================== -->
+    <appender name="DEBUG_CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5p][%C{2}.%M()] %m%n" />
+        </layout>
+    </appender>
+    
+    <!-- ==================================================================================================== -->
+    <!-- Service Appender -->
+    <!-- ==================================================================================================== -->
+    <appender name="FILE_LOG" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="logs/s3.uploader.log" />
+        <param name="Append" value="true" />
+        <param name="MaxFileSize" value="50MB" />
+        <param name="MaxBackupIndex" value="5" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5p][%C{2}.%M()] %m%n" />
+        </layout>
+    </appender>
+    
+   
+    <!-- ==================================================================================================== -->
+    <!-- for logging com.anthunt.aws.s3uploader -->
+    <!-- ==================================================================================================== -->    
+    <logger name="com.anthunt.aws.s3uploader">
+        <level value="DEBUG" />
+        <appender-ref ref="FILE_LOG" />
+    </logger>
+    
+    <!-- ==================================================================================================== -->
+    <!-- for logging OFF -->
+    <!-- ==================================================================================================== -->  
+    <logger name="com.amazonaws">
+        <level value="INFO" />
+        <appender-ref ref="FILE_LOG" />
+    </logger> 
+    
+    <logger name="slf4j">
+        <level value="INFO" />
+        <appender-ref ref="FILE_LOG" />
+    </logger> 
+    
+    <root>
+        <level value="INFO" />
+        <appender-ref ref="DEBUG_CONSOLE" />
+    </root>
+    
+</log4j:configuration>

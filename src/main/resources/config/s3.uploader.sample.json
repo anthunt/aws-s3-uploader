@@ -1,0 +1,35 @@
+{
+  "services" : [ 
+  	{
+	    "name" : "SAMPLE",
+	    "readLimit" : 1,
+	    "bandwidthLimit" : 5,
+	    "sleepTime" : 2,
+	    "uploadDirectory" : "/upload",
+	    "completeDirectory" : "/complete",
+	    "useMD5CheckSum" : true,
+		"deleteCompleted": false,
+		"todayFormat" : "yyyy-MM-dd",
+	    "s3Access" : {
+	      "bucketName" : "anthunt-bucket",
+	      "accessKey" : "xxxxxxxxxxxxxxxxxxxxxxxxx",
+	      "secretKey" : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+	      "proxy" : {
+	        "protocol" : "HTTP",
+	        "host" : "xxx.xxx.xxx.xxx",
+	        "port" : 8080,
+	        "socketBufferSizeHints" : {
+	          "socketSendBufferSizeHint" : 1024,
+	          "socketReceiveBufferSizeHint" : 1024
+	        }
+	      }
+	    },
+	    "directories" : [ 
+	    	{
+	      		"sourceDirectory" : "source",
+	      		"targetS3KeyFormat" : "daily/mig/{today}/{fileName}"
+	    	} 
+      	]
+    } 
+  ]
+}

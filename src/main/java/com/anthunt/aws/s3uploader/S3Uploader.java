@@ -8,7 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AbortMultipartUploadRequest;
@@ -22,7 +23,7 @@ import com.anthunt.aws.s3uploader.config.model.Service;
 
 public class S3Uploader {
 
-    private Logger log = Logger.getLogger(S3Uploader.class);
+    private Logger log = LoggerFactory.getLogger(S3Uploader.class);
 
     private static final String TODAY_FORMAT = "[{]today[}]";
     private static final String FILE_NAME_FORMAT = "[{]fileName[}]";
@@ -52,7 +53,7 @@ public class S3Uploader {
 		List<File> findedFiles = new ArrayList<File>();
 		File rootDir = new File(directory.getSourceDirectory());
 		
-		log.debug("Data Files Directory : " + rootDir.getAbsolutePath());
+		log.debug("Data Files Directory : {}", rootDir.getAbsolutePath());
 		if(rootDir.isDirectory()) {
 			log.debug("Data Files Directory is Exists !");
 			
@@ -63,25 +64,25 @@ public class S3Uploader {
 					break;
 				}
 				
-				log.debug("Use MD5 CheckSum Check [" + this.service.isUseMD5CheckSum() + "]");
+				log.debug("Use MD5 CheckSum Check [{}]", this.service.isUseMD5CheckSum());
 				if(this.service.isUseMD5CheckSum()) {
 					
 					String fileName = file.getName();
-					log.debug("File Name : " + fileName);
+					log.debug("File Name : {}", fileName);
 					
 					if(fileName.endsWith(".md5")) {
-						log.debug("Found MD5 File ! : " + fileName);
+						log.debug("Found MD5 File ! : {}", fileName);
 						
 						String dataFileName = fileName.replaceAll(".md5", "");
-						log.debug("Data File Name : " + dataFileName);
+						log.debug("Data File Name : {}", dataFileName);
 						
 						File dataFile = new File(directory.getSourceDirectory(), dataFileName);
-						log.debug("Data File Path : " + dataFile.getAbsolutePath());
-						log.debug(dataFile.exists());
+						log.debug("Data File Path : {}", dataFile.getAbsolutePath());
+						log.debug("Data file exists : {}", dataFile.exists());
 						
 						if(dataFile.exists()) {
 							
-							log.debug("Found Data File ! : " + dataFile.getAbsolutePath());
+							log.debug("Found Data File ! : {}", dataFile.getAbsolutePath());
 							
 							findedFiles.add(dataFile);
 							findedFiles.add(file);
@@ -100,9 +101,9 @@ public class S3Uploader {
 					findedFiles.add(file);
 				}
 			}
-			log.info("[OK] makeFileList : " + findedFiles.size());
+			log.info("[OK] makeFileList : {}", findedFiles.size());
 		} else {
-			log.error("makeFIleList - Dir not exist :" + directory.getSourceDirectory());
+			log.error("makeFIleList - Dir not exist : {}", directory.getSourceDirectory());
 		}
 		return findedFiles;
 	}
@@ -113,12 +114,12 @@ public class S3Uploader {
 			File targetDir = new File(directory.getSourceDirectory() + this.service.getUploadDirectory());
 			File targetFile = new File(targetDir, file.getName());
 			if(targetFile.exists()) {
-				log.error("moveFilesToUploadDirectory - duplicate file : " + file.getName());
+				log.error("moveFilesToUploadDirectory - duplicate file : {}", file.getName());
 			} else {
 				try {
 					FileUtils.moveFileToDirectory(file, targetDir, true);
 				} catch (IOException e) {
-					log.error("moveFilesToUploadDirectory - don't move : " + file.getName() + ", reason : " + e.getMessage());
+					log.error("moveFilesToUploadDirectory - don't move : {}, reason : {}", file.getName() , e.getMessage());
 				}
 			}
 			movedFiles.add(targetFile);
@@ -128,14 +129,14 @@ public class S3Uploader {
 	
 	private void uploadFiles(Directory directory, List<File> fileList) {
 		for (File file : fileList) {
-			log.info("[OK] uploadFile Start : " + file.getName());
+			log.info("[OK] uploadFile Start : {}", file.getName());
 			try {
 				this.uploadFile(directory, file);
 				this.moveCompleteFile(directory, file);
-				log.info("[OK] uploadFile End : " + file.getName());
+				log.info("[OK] uploadFile End : {}", file.getName());
 			} catch (Exception e) {
 				this.restoreUploadFile(directory, file);
-				log.error("uploadFile - upload fail : " + file.getName() + ", reason : " + e.getMessage());
+				log.error("uploadFile - upload fail : {}, reason : {}", file.getName(), e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -184,7 +185,7 @@ public class S3Uploader {
                 // Upload part and add response to our list.
                 partETags.add(s3.uploadPart(uploadRequest).getPartETag());
                 filePosition += partSize;
-                log.debug("Upload " + filePosition);
+                log.debug("Upload : {}", filePosition);
                 Thread.sleep(this.service.getSleepTime() * 1000);
             }
     
@@ -203,9 +204,9 @@ public class S3Uploader {
 	private void restoreUploadFile(Directory directory, File file) {
 		try {
 			FileUtils.moveFileToDirectory(file, new File(directory.getSourceDirectory()), true);
-			log.warn("restoreUploadFile - move restore file success : " + file.getName());
+			log.warn("restoreUploadFile - move restore file success : {}", file.getName());
 		} catch (IOException e) {
-			log.error("restoreUploadFile - move restore file fail : " + e.getMessage());
+			log.error("restoreUploadFile - move restore file fail : {}", e.getMessage());
 		}
 	}
     
@@ -213,7 +214,7 @@ public class S3Uploader {
 		try {
 			FileUtils.moveFileToDirectory(file, new File(directory.getSourceDirectory() + this.service.getCompleteDirectory()), true);
 		} catch (IOException e) {
-			log.error("completeFile - move complete file fail : " + e.getMessage());
+			log.error("completeFile - move complete file fail : {}", e.getMessage());
 		}
 	}
 
@@ -221,14 +222,14 @@ public class S3Uploader {
 		try {
 			FileUtils.forceDeleteOnExit(new File(directory.getSourceDirectory() + this.service.getUploadDirectory()));
 		} catch (IOException e) {
-			log.error("delete upload directory fail : " + e.getMessage());
+			log.error("delete upload directory fail : {}", e.getMessage());
 		}
 		
 		if(this.service.isDeleteCompleted()) {
 			try {
 				FileUtils.forceDeleteOnExit(new File(directory.getSourceDirectory() + this.service.getCompleteDirectory()));
 			} catch (IOException e) {
-				log.error("delete complete directory fail : " + e.getMessage());
+				log.error("delete complete directory fail : {}", e.getMessage());
 			}
 		}
 	}

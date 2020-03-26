@@ -1,6 +1,7 @@
 package com.anthunt.aws.s3uploader;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -9,7 +10,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.anthunt.aws.s3uploader.config.ConfigLoader;
 import com.anthunt.aws.s3uploader.config.model.CommandArguments;
@@ -18,7 +20,7 @@ import com.anthunt.aws.s3uploader.config.model.Services;
 
 public class S3UploaderStarter {
 
-	private Logger log = Logger.getLogger(S3UploaderStarter.class);
+	private Logger log = LoggerFactory.getLogger(S3UploaderStarter.class);
 	
     private Options options;
     
@@ -53,23 +55,30 @@ public class S3UploaderStarter {
         	}
         	
     	} catch (ParseException e) {
-    		System.err.println("Arguments parsing failed.  Reason: " + e.getMessage());
+    		System.out.println("Arguments parsing failed.  Reason: " + e.getMessage());
     		e.printStackTrace();
     		this.printHelp();
     		return;
     	}
+    			
+    	try {
+			ConfigLoader.loadLog4J2ConfigXML(commandArguments.getLog4j2ConfigURL());
+		} catch (URISyntaxException e1) {
+			e1.printStackTrace();
+			System.out.println("Could not load log4j2 configuration file.  Reason: " + e1.getMessage());
+    		e1.printStackTrace();
+    		this.printHelp();
+    		return;
+		}
 
-    	ConfigLoader.loadLog4JConfigXML(commandArguments.getLog4jConfigURL());
-    	
     	log.info("Start S3UploaderStarter");
-    	log.info("Running Arguments [" + commandArguments.toString() + "]");
-		log.info("loaded log4j config");
-		
+    	log.info("Running Arguments [{}]", commandArguments.toString());
+    	
     	Services services = new Services();
     	
     	try {
     		
-			services = ConfigLoader.loadConfigJSON(commandArguments.getJsonConfigFile());
+			services = ConfigLoader.loadConfigJSON(commandArguments.getJsonConfigURL());
 			log.info("loaded json config [Service : " + commandArguments.getService() + "/" + services.getServices().size() + "ea]");
 			
 		} catch (IOException e) {

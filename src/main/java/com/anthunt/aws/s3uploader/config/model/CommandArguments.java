@@ -4,17 +4,18 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CommandArguments {
 	
-	private Logger log = Logger.getLogger(CommandArguments.class);
+	private Logger log = LoggerFactory.getLogger(CommandArguments.class);
 	
 	private static final String DEFAULT_CONFIG_DIRECTORY = "config";
 	private static final String JSON_CONFIG_FILE_NAME = "s3.uploader";
 	private static final String JSON_CONFIG_FILE_EXTENTION = ".json";
-	private static final String LOG4J_CONFIG_FILE_NAME = "log4j";
-	private static final String LOG4J_CONFIG_FILE_EXTENTION = ".xml";
+	private static final String LOG4J2_CONFIG_FILE_NAME = "log4j2";
+	private static final String LOG4J2_CONFIG_FILE_EXTENTION = ".xml";
 	
 	private String configDirectory;
 	private String service;
@@ -25,7 +26,7 @@ public class CommandArguments {
 	}
 	
 	public String getConfigDirectory() {
-		log.trace("Config Directory Path [" + this.configDirectory + "]");
+		log.trace("Config Directory Path [{}]", this.configDirectory);
 		return this.configDirectory;
 	}
 	
@@ -33,33 +34,47 @@ public class CommandArguments {
 		this.configDirectory = configDirectory;
 	}
 	
-	public File getJsonConfigFile() {
-		return new File(this.getConfigDirectory(), JSON_CONFIG_FILE_NAME + this.getServerType() + JSON_CONFIG_FILE_EXTENTION); 
-	}
-	
-	public URL getLog4jConfigURL() {
+	public URL getJsonConfigURL() {
 		
-		URL log4jConfigURL = null;
+		URL jsonConfigURL = null;
 		
-		File log4jConfigXML = new File(this.getConfigDirectory(), LOG4J_CONFIG_FILE_NAME + this.getServerType() + LOG4J_CONFIG_FILE_EXTENTION);
-		File log4jConfigLocalXML = new File(this.getConfigDirectory(), LOG4J_CONFIG_FILE_NAME + LOG4J_CONFIG_FILE_EXTENTION);
-		if(log4jConfigXML.exists()) {
+		File jsonConfigFile = new File(this.getConfigDirectory(), JSON_CONFIG_FILE_NAME + this.getServerType() + JSON_CONFIG_FILE_EXTENTION);
+		if(jsonConfigFile.exists()) {
 			try {
-				log4jConfigURL = log4jConfigXML.toURI().toURL();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-		} else if(log4jConfigLocalXML.exists()) {
-			try {
-				log4jConfigURL = log4jConfigLocalXML.toURI().toURL();
+				jsonConfigURL = jsonConfigFile.toURI().toURL();
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
 		} else {
-			log4jConfigURL = this.getClass().getClassLoader().getResource("config/log4j.xml");
+			jsonConfigURL = this.getClass().getClassLoader().getResource("config/" + JSON_CONFIG_FILE_NAME + JSON_CONFIG_FILE_EXTENTION);
 		}
 		
-		return log4jConfigURL;
+		return jsonConfigURL; 
+	}
+	
+	public URL getLog4j2ConfigURL() {
+		
+		URL log4j2ConfigURL = null;
+		
+		File log4j2ConfigXML = new File(this.getConfigDirectory(), LOG4J2_CONFIG_FILE_NAME + this.getServerType() + LOG4J2_CONFIG_FILE_EXTENTION);
+		File log4j2ConfigLocalXML = new File(this.getConfigDirectory(), LOG4J2_CONFIG_FILE_NAME + LOG4J2_CONFIG_FILE_EXTENTION);
+		if(log4j2ConfigXML.exists()) {
+			try {
+				log4j2ConfigURL = log4j2ConfigXML.toURI().toURL();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+		} else if(log4j2ConfigLocalXML.exists()) {
+			try {
+				log4j2ConfigURL = log4j2ConfigLocalXML.toURI().toURL();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			log4j2ConfigURL = this.getClass().getClassLoader().getResource("config/" + LOG4J2_CONFIG_FILE_NAME + LOG4J2_CONFIG_FILE_EXTENTION);
+		}
+		
+		return log4j2ConfigURL;
 	}
 	
 	public String getService() {
@@ -83,8 +98,8 @@ public class CommandArguments {
 		toStringBuilder.append("configDirectory:").append(this.getConfigDirectory())
 					   .append(", service:").append(this.getService())
 					   .append(", serverType:").append(this.getServerType())
-					   .append(", jsonConfigFile:").append(this.getJsonConfigFile().getPath())
-					   .append(", log4jConfigFile:").append(this.getLog4jConfigURL().toString());
+					   .append(", jsonConfigFile:").append(this.getJsonConfigURL().getPath())
+					   .append(", log4j2ConfigFile:").append(this.getLog4j2ConfigURL().toString());
 		
 		return toStringBuilder.toString();
 	}

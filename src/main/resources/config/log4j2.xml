@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    
+    <Appenders>
+    	<!-- ==================================================================================================== -->
+	    <!-- Debug Console Appender -->
+	    <!-- ==================================================================================================== -->
+    	<Console name="DEBUG_CONSOLE" target="SYSTEM_OUT">
+	      <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5p][%C{2}.%M()] %m%n"/>
+	    </Console>
+	
+		<!-- ==================================================================================================== -->
+	    <!-- Service Appender -->
+	    <!-- ==================================================================================================== -->    
+	    <RollingFile
+		    name="FILE_LOG"
+		    fileName="logs/s3.uploader.log"
+		    filePattern="logs/s3.uploader.%i.log.gz"
+		    ignoreExceptions="false">
+		    <PatternLayout>
+		        <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5p][%C{2}.%M()] %m%n</Pattern>
+		    </PatternLayout>
+		    <Policies>
+		        <SizeBasedTriggeringPolicy size="50MB" />
+		    </Policies>
+		    <DefaultRolloverStrategy max="5" />
+		</RollingFile>
+	    
+    </Appenders>
+    
+	<Loggers>
+	
+		<!-- ==================================================================================================== -->
+	    <!-- for logging com.anthunt.aws.s3uploader -->
+	    <!-- ==================================================================================================== -->	
+		<Logger name="com.anthunt.aws.s3uploader" level="debug">
+	        <AppenderRef ref="FILE_LOG" />
+	    </Logger>
+		
+		<!-- ==================================================================================================== -->
+	    <!-- for logging OFF -->
+	    <!-- ==================================================================================================== -->
+		<Logger name="com.amazonaws" level="info">
+	        <AppenderRef ref="FILE_LOG" />
+	    </Logger>
+		
+		<Logger name="slf4j" level="info">
+	        <AppenderRef ref="FILE_LOG" />
+	    </Logger>
+	    
+		<Root level="debug">
+			<AppenderRef ref="FILE_LOG" />
+			<AppenderRef ref="DEBUG_CONSOLE"/>
+		</Root>
+		
+	</Loggers>
+            
+</Configuration>

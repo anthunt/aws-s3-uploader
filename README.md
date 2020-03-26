@@ -84,7 +84,7 @@
 	}
 
 # Logging configuration
-
+ 
 >
 * Set to `"File Name : log4j2.xml or log4j2.[serverType].xml"` file under config path.
 * If there is no log setting under the config path, the default log4j2.xml setting set in the jar program is used.

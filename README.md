@@ -1,6 +1,8 @@
-#s3-uploader Configuration Guide
+# s3-uploader Configuration Guide
 
-## Deploy
+[![Build Status](https://travis-ci.org/anthunt/aws-s3-uploader.svg?branch=master)](https://travis-ci.org/anthunt/aws-s3-uploader.svg?branch=master)
+
+# Deploy
 
 >
 1. pom.xml - run "maven install" 
@@ -14,7 +16,7 @@
 * **config :** log4j2, s3.uploader preference file directory
 * **lib :** Reference library jar file directory when executing s3-uploader (program is not recognized when changing)
 
-## Execution
+# Execution
 
 >
 * **Running Command :** `java -jar s3-uploader-[yyyyMMddHHmiss].jar [options]`
@@ -29,7 +31,7 @@
 >
 * When executed, the logs directory is created in the execution location and log files are saved. (Can be changed in log4j2.xml settings)
 
-## JSON Settings Description
+# JSON Settings Description
 
 * Optional configuration
 
@@ -81,7 +83,7 @@
 		]
 	}
 
-## Logging configuration
+# Logging configuration
 
 >
 * Set to `"File Name : log4j2.xml or log4j2.[serverType].xml"` file under config path.

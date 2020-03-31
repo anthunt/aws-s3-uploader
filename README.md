@@ -1,6 +1,6 @@
 # s3-uploader Configuration Guide
 
-[![Build Status](https://travis-ci.org/anthunt/aws-s3-uploader.svg?branch=master)](https://travis-ci.org/anthunt/aws-s3-uploader.svg?branch=master)
+[![Build Status](https://travis-ci.org/anthunt/aws-s3-uploader.svg?branch=master)](https://travis-ci.org/anthunt/aws-s3-uploader)
 
 # Deploy
 

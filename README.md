@@ -5,10 +5,10 @@
 
 ## Deploy
 
- > 1. pom.xml - run "maven install" 
- > 2. Confirm creation of <code>s3-uploader-\[yyyyMMddHHmiss\].zip</code> file in target directory
- > 3. Extract and use the generated zip file in the path you want to run
- > 4. Structure after extracting zip file
+>	1. pom.xml - run "maven install" 
+>	2. Confirm creation of <code>s3-uploader-\[yyyyMMddHHmiss\].zip</code> file in target directory
+>	3. Extract and use the generated zip file in the path you want to run
+>	4. Structure after extracting zip file
 
  > - **<code>s3-uploader-\[yyyyMMddHHmiss\].jar</code> :** jar for running s3-uploader
  > - **run.sh :** Sample run shell script

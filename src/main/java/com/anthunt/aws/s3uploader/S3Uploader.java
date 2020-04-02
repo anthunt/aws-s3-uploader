@@ -240,7 +240,7 @@ public class S3Uploader {
 	            								   .uploadId(uploadId)
             								   .build()
             );
-            throw new Exception("Exception " + e.toString() + " caught");
+            throw new RuntimeException("Exception " + e.toString() + " caught");
         } finally {
 			if(fileInputStream != null) { try { fileInputStream.close(); } catch(Exception skip) {} }
 		}

@@ -139,13 +139,9 @@ public class S3UploaderStarter {
     
     public static void main(String[] args) {
         try {
-        	
         	new S3UploaderStarter(args);
-        	
-            System.exit(0);
         } catch (Exception e) {
             e.printStackTrace();
-            System.exit(1);
         }
     }
     

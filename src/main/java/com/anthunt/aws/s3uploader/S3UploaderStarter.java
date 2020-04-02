@@ -61,15 +61,7 @@ public class S3UploaderStarter {
     		return;
     	}
     			
-    	try {
-			ConfigHelper.loadLog4J2ConfigXML(commandArguments.getLog4j2ConfigURL());
-		} catch (URISyntaxException e1) {
-			e1.printStackTrace();
-			System.out.println("Could not load log4j2 configuration file.  Reason: " + e1.getMessage());
-    		e1.printStackTrace();
-    		this.printHelp();
-    		return;
-		}
+    	this.configLog(commandArguments);
 
     	log.info("Start S3UploaderStarter");
     	log.info("Running Arguments [{}]", commandArguments.toString());
@@ -96,6 +88,18 @@ public class S3UploaderStarter {
 		
 		log.info("Upload Process Completed !");
     	
+    }
+    
+    private void configLog(CommandArguments commandArguments) {
+    	try {
+			ConfigHelper.loadLog4J2ConfigXML(commandArguments.getLog4j2ConfigURL());
+		} catch (URISyntaxException e1) {
+			e1.printStackTrace();
+			System.out.println("Could not load log4j2 configuration file.  Reason: " + e1.getMessage());
+    		e1.printStackTrace();
+    		this.printHelp();
+    		return;
+		}
     }
     
     private void setOptions() {

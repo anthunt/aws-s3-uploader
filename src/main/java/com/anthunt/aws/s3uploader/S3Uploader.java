@@ -14,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.anthunt.aws.s3uploader.config.UploaderException;
 import com.anthunt.aws.s3uploader.config.model.Directory;
 import com.anthunt.aws.s3uploader.config.model.Service;
 
@@ -240,7 +241,7 @@ public class S3Uploader {
 	            								   .uploadId(uploadId)
             								   .build()
             );
-            throw new RuntimeException("Exception " + e.toString() + " caught");
+            throw new UploaderException("Exception " + e.toString() + " caught");
         } finally {
 			if(fileInputStream != null) { try { fileInputStream.close(); } catch(Exception skip) {} }
 		}

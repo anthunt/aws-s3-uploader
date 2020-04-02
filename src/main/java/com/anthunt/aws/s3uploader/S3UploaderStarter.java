@@ -13,7 +13,7 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.anthunt.aws.s3uploader.config.ConfigLoader;
+import com.anthunt.aws.s3uploader.config.ConfigHelper;
 import com.anthunt.aws.s3uploader.config.model.CommandArguments;
 import com.anthunt.aws.s3uploader.config.model.Service;
 import com.anthunt.aws.s3uploader.config.model.Services;
@@ -62,7 +62,7 @@ public class S3UploaderStarter {
     	}
     			
     	try {
-			ConfigLoader.loadLog4J2ConfigXML(commandArguments.getLog4j2ConfigURL());
+			ConfigHelper.loadLog4J2ConfigXML(commandArguments.getLog4j2ConfigURL());
 		} catch (URISyntaxException e1) {
 			e1.printStackTrace();
 			System.out.println("Could not load log4j2 configuration file.  Reason: " + e1.getMessage());
@@ -78,7 +78,7 @@ public class S3UploaderStarter {
     	
     	try {
     		
-			services = ConfigLoader.loadConfigJSON(commandArguments.getJsonConfigURL());
+			services = ConfigHelper.loadConfigJSON(commandArguments.getJsonConfigURL());
 			log.info("loaded json config [Service : " + commandArguments.getService() + "/" + services.getServices().size() + "ea]");
 			
 		} catch (IOException e) {

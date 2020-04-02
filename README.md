@@ -29,14 +29,14 @@
 
 ## JSON Settings Description
 
-* Optional configuration   
+* Optional configuration     
 
-1. uploadDirectory   
+1. uploadDirectory    
 2. completeDirectory   
 3. useMD5CheckSum   
-4. deleteCompleted    
+4. deleteCompleted     
 5. todayFormat   
-6. proxy   
+6. proxy    
 
 - Full configuration - <code>File Name : s3.uploader.json or s3.uploader.\[serverType\].json</code>   
 
@@ -79,5 +79,5 @@
 
 ## Logging configuration
  
-- Set to <code>"File Name : log4j2.xml or log4j2.\[serverType\].xml"</code> file under config path.   
-- If there is no log setting under the config path, the default log4j2.xml setting set in the jar program is used.   
+* Set to <code>"File Name : log4j2.xml or log4j2.\[serverType\].xml"</code> file under config path.   
+* If there is no log setting under the config path, the default log4j2.xml setting set in the jar program is used.   

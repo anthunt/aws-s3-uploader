@@ -6,18 +6,18 @@
 ## Deploy
 
 > 1. pom.xml - run "maven install" 
-> 2. Confirm creation of <code>s3-uploader-[yyyyMMddHHmiss].zip</code> file in target directory
+> 2. Confirm creation of <code>s3-uploader-\[yyyyMMddHHmiss\].zip</code> file in target directory
 > 3. Extract and use the generated zip file in the path you want to run
 > 4. Structure after extracting zip file
 
-> - **<code>s3-uploader-[yyyyMMddHHmiss].jar</code> :** jar for running s3-uploader
+> - **<code>s3-uploader-\[yyyyMMddHHmiss\].jar</code> :** jar for running s3-uploader
 > - **run.sh :** Sample run shell script
 > - **config :** log4j2, s3.uploader preference file directory
 > - **lib :** Reference library jar file directory when executing s3-uploader (program is not recognized when changing)
 
 ## Execution
 
-> - **Running Command :** <code>java -jar s3-uploader-[yyyyMMddHHmiss].jar [options]</code>
+> - **Running Command :** <code>java -jar s3-uploader-\[yyyyMMddHHmiss\].jar \[options\]</code>
 > - **options :**
 
 > - `-help` : Option help
@@ -38,7 +38,7 @@
 > 5. todayFormat
 > 6. proxy
 
-- Full configuration - <code>File Name : s3.uploader.json or s3.uploader.[serverType].json</code>
+- Full configuration - <code>File Name : s3.uploader.json or s3.uploader.\[serverType\].json</code>
 
 <pre>
 	{
@@ -79,5 +79,5 @@
 
 ## Logging configuration
  
-> - Set to <code>"File Name : log4j2.xml or log4j2.[serverType].xml"</code> file under config path.
+> - Set to <code>"File Name : log4j2.xml or log4j2.\[serverType\].xml"</code> file under config path.
 > - If there is no log setting under the config path, the default log4j2.xml setting set in the jar program is used.

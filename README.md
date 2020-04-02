@@ -36,12 +36,13 @@
 
 * Optional configuration
 
-> 1. uploadDirectory
-> 2. completeDirectory
-> 3. useMD5CheckSum
-> 4. deleteCompleted
-> 5. todayFormat
-> 6. proxy
+>
+1. uploadDirectory
+2. completeDirectory
+3. useMD5CheckSum
+4. deleteCompleted
+5. todayFormat
+6. proxy
 
 * Full configuration - `File Name : s3.uploader.json or s3.uploader.[serverType].json` 
 

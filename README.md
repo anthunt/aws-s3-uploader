@@ -40,7 +40,7 @@
 
 - Full configuration - `File Name : s3.uploader.json or s3.uploader.[serverType].json` 
 
-```
+<pre>
 	{
 		"services" : [ 
 			{
@@ -75,7 +75,7 @@
 			} 
 		]
 	}
-```
+</pre>
 
 ## Logging configuration
  

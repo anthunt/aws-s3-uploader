@@ -1,9 +1,12 @@
 package com.anthunt.aws.s3uploader;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -11,15 +14,19 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.AbortMultipartUploadRequest;
-import com.amazonaws.services.s3.model.CompleteMultipartUploadRequest;
-import com.amazonaws.services.s3.model.InitiateMultipartUploadRequest;
-import com.amazonaws.services.s3.model.InitiateMultipartUploadResult;
-import com.amazonaws.services.s3.model.PartETag;
-import com.amazonaws.services.s3.model.UploadPartRequest;
 import com.anthunt.aws.s3uploader.config.model.Directory;
 import com.anthunt.aws.s3uploader.config.model.Service;
+
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.AbortMultipartUploadRequest;
+import software.amazon.awssdk.services.s3.model.CompleteMultipartUploadRequest;
+import software.amazon.awssdk.services.s3.model.CompleteMultipartUploadResponse;
+import software.amazon.awssdk.services.s3.model.CompletedMultipartUpload;
+import software.amazon.awssdk.services.s3.model.CompletedPart;
+import software.amazon.awssdk.services.s3.model.CreateMultipartUploadRequest;
+import software.amazon.awssdk.services.s3.model.CreateMultipartUploadResponse;
+import software.amazon.awssdk.services.s3.model.UploadPartRequest;
 
 public class S3Uploader {
 
@@ -149,55 +156,94 @@ public class S3Uploader {
 	}
 	
 	private void uploadFile(Directory directory, File file) throws Exception {
-        		
-        AmazonS3 s3 = this.service.getAmazonS3();
+        
+		S3Client s3 = this.service.getAmazonS3();
         
         String bucketName = this.service.getS3Access().getBucketName();
         String objectKeyName = this.getS3ObjectKey(directory.getTargetS3KeyFormat(), file.getName());
         
-        // for each part upload.
-        List<PartETag> partETags = new ArrayList<PartETag>();
-    
         // Step 1: Initialize.
-        InitiateMultipartUploadRequest initRequest = new InitiateMultipartUploadRequest(bucketName, objectKeyName);
-        InitiateMultipartUploadResult initResponse = s3.initiateMultipartUpload(initRequest);
+        CreateMultipartUploadResponse createMultipartUploadResponse = s3.createMultipartUpload(
+        		CreateMultipartUploadRequest.builder()
+        										.bucket(bucketName)
+        										.key(objectKeyName)
+        								    .build()
+        );
         
-        long contentLength = file.length();
-        long partSize =  Math.round(((double)(this.service.getBandwidthLimit()) * 1024 * 1024)); // Set part size(min 5 MB)
+        String uploadId = createMultipartUploadResponse.uploadId();
+                
+        int partSize = (int) Math.round(((double)(this.service.getBandwidthLimit()) * 1024 * 1024)); // Set part size(min 5 MB)
+        
+        FileInputStream fileInputStream = null;
         
         try {
+        	
+        	fileInputStream = new FileInputStream(file);
+        	
             // Step 2: Upload parts.
-            long filePosition = 0;
-            for (int i = 1; filePosition < contentLength; i++) {
-                // Last part can be less than partSize. Adjust part size.
-                partSize = Math.min(partSize, (contentLength - filePosition));
-                    
+        	Collection<CompletedPart> parts = new ArrayList<>();
+        	
+        	byte[] bytes = new byte[partSize];
+        	
+            int readBytes = 0;
+            int partNumber = 1;
+            while((readBytes = fileInputStream.read(bytes)) != -1) {
+            	                
                 // Create request to upload a part.
-                UploadPartRequest uploadRequest = new UploadPartRequest()
-                										.withBucketName(bucketName)
-                										.withKey(objectKeyName)
-                										.withUploadId(initResponse.getUploadId())
-                										.withPartNumber(i)
-                										.withFileOffset(filePosition)
-                										.withFile(file)
-                										.withPartSize(partSize);
+                UploadPartRequest uploadRequest = UploadPartRequest.builder()
+			                										.bucket(bucketName)
+			                										.key(objectKeyName)
+			                										.uploadId(uploadId)
+			                										.partNumber(partNumber)
+			                										.build();
     
                 // Upload part and add response to our list.
-                partETags.add(s3.uploadPart(uploadRequest).getPartETag());
-                filePosition += partSize;
-                log.debug("Upload : {}", filePosition);
+                parts.add(
+                		CompletedPart.builder()
+                					 .eTag(
+                							 s3.uploadPart(
+                									 uploadRequest
+                									 , RequestBody.fromByteBuffer(
+                											 ByteBuffer.wrap(bytes, 0, readBytes)
+                									 )
+                							 ).eTag()
+                					 )
+                					 .partNumber(partNumber)
+                					 .build()
+                );
+                partNumber++;
+                log.debug("Upload : {} bytes", readBytes);
                 Thread.sleep(this.service.getSleepTime() * 1000);
             }
     
-            // Step 3: complete.
-            CompleteMultipartUploadRequest compRequest = new CompleteMultipartUploadRequest(bucketName, objectKeyName, initResponse.getUploadId(), partETags);
-                    
-            s3.completeMultipartUpload(compRequest);
+            // Step 3: complete.                    
+            CompleteMultipartUploadResponse completeMultipartUploadResponse = s3.completeMultipartUpload(
+            		CompleteMultipartUploadRequest.builder()
+            									  .bucket(bucketName)
+            									  .key(objectKeyName)
+            									  .uploadId(uploadId)
+            									  .multipartUpload(
+            											  CompletedMultipartUpload.builder()
+            											  						  .parts(parts)
+            											                          .build()
+            									  )
+            									  .build()
+            );
 
+            log.debug("Uploaded : {}", completeMultipartUploadResponse.bucket());
+            
         } catch (Exception e) {
-            s3.abortMultipartUpload(new AbortMultipartUploadRequest(bucketName, objectKeyName, initResponse.getUploadId()));
+            s3.abortMultipartUpload(
+            		AbortMultipartUploadRequest.builder()
+	            								   .bucket(bucketName)
+	            								   .key(objectKeyName)
+	            								   .uploadId(uploadId)
+            								   .build()
+            );
             throw new Exception("Exception " + e.toString() + " caught");
-        }
+        } finally {
+			if(fileInputStream != null) { try { fileInputStream.close(); } catch(Exception skip) {} }
+		}
 
     }
     

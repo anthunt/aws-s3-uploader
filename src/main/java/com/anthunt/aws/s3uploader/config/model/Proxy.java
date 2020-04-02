@@ -5,8 +5,8 @@ public class Proxy {
 	private String protocol;
 	private String host;
 	private int port;
-	private Integer timeout;
-	private SocketBufferSizeHints socketBufferSizeHints;
+	private String username;
+	private String password;
 	
 	public String getProtocol() {
 		return protocol.toUpperCase();
@@ -31,21 +31,21 @@ public class Proxy {
 	public void setPort(int port) {
 		this.port = port;
 	}
-	
-	public Integer getTimeout() {
-		return timeout;
+
+	public String getUserName() {
+		return this.username;
 	}
-	
-	public void setTimeout(Integer timeout) {
-		this.timeout = timeout;
+
+	public String getPassword() {
+		return this.password;
 	}
-	
-	public SocketBufferSizeHints getSocketBufferSizeHints() {
-		return socketBufferSizeHints;
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}	
 	
-	public void setSocketBufferSizeHints(SocketBufferSizeHints socketBufferSizeHints) {
-		this.socketBufferSizeHints = socketBufferSizeHints;
-	}
-		
 }

@@ -61,17 +61,15 @@
 				"todayFormat": "java SimpleDateFormat String pattern for {today} variable (Default : yyyy-MM-dd)",
 				"s3Access" : {
 					"bucketName" : "S3 Bucket Name",
+	      			"profileName" : "profileName - If profileName is not null, accesskey and secretKey are ignored",
 					"accessKey" : "AWS IAM AccessKey",
 					"secretKey" : "AWS IAM SecretKey",
 					"proxy" : {
 						"protocol" : "Proxy protocol - HTTP, HTTPS, TCP, UDP",
 						"host" : "Proxy Host Address",
 						"port" : Proxy Port Number(int),
-						"timeout" : Proxy Timeout(ms, int),
-						"socketBufferSizeHints" : {
-							"socketSendBufferSizeHint" : socket send buffer size(byte, int),
-							"socketReceiveBufferSizeHint" : socket receive buffer size(byte, int)
-						}
+						"username" : "Proxy Username",
+	        			"password" : "Proxy password"
 					}
 				},
 				"directories" : [ 

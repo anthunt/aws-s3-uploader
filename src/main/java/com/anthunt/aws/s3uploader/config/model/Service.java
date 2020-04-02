@@ -1,12 +1,18 @@
 package com.anthunt.aws.s3uploader.config.model;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.Protocol;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.Protocol;
+import software.amazon.awssdk.http.SdkHttpClient;
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
+import software.amazon.awssdk.http.apache.ProxyConfiguration;
+import software.amazon.awssdk.services.s3.S3Client;
 
 public class Service {
 	
@@ -113,29 +119,41 @@ public class Service {
 		return s3Access;
 	}
 	
-	public AmazonS3 getAmazonS3() {
+	public S3Client getAmazonS3() {
 		
-        ClientConfiguration clientCfg = new ClientConfiguration();
-        if(this.s3Access.getProxy() != null) {
-        	if(this.s3Access.getProxy().getSocketBufferSizeHints() != null) {
-        		clientCfg.setSocketBufferSizeHints(
-        				this.s3Access.getProxy().getSocketBufferSizeHints().getSocketSendBufferSizeHint()
-        				, this.s3Access.getProxy().getSocketBufferSizeHints().getSocketReceiveBufferSizeHint()
-        		);
-        	}
-        	if(this.s3Access.getProxy().getTimeout() != null) {
-        		clientCfg.setSocketTimeout(this.s3Access.getProxy().getTimeout());
-        	}
-	        clientCfg.setProtocol(Protocol.valueOf(this.s3Access.getProxy().getProtocol()));
-	        clientCfg.setProxyHost(this.s3Access.getProxy().getHost());
-	        clientCfg.setProxyPort(this.s3Access.getProxy().getPort());
-        }
-        
-        return new AmazonS3Client(
-        		new BasicAWSCredentials(this.s3Access.getAccessKey(), this.s3Access.getSecretKey())
-        		, clientCfg
-        );        
-        
+		URI endpoint;
+		ProxyConfiguration proxyConfiguration = null;
+
+		if(this.s3Access.getProxy() != null) {
+			try {
+				endpoint = new URI(Protocol.valueOf(this.s3Access.getProxy().getProtocol()) + "://" + this.s3Access.getProxy().getHost() + ":" + this.s3Access.getProxy().getPort());
+				proxyConfiguration = ProxyConfiguration.builder()
+													   .endpoint(endpoint)
+													   .username(this.s3Access.getProxy().getUserName())
+													   .password(this.s3Access.getProxy().getPassword())
+													   .build();		   
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		SdkHttpClient sdkHttpClient = ApacheHttpClient.builder()
+													  .proxyConfiguration(proxyConfiguration)
+													  .build();
+                     
+		AwsCredentialsProvider awsCredentialsProvider = null;
+		
+		if(this.s3Access.getProfileName() == null) {
+			awsCredentialsProvider = StaticCredentialsProvider.create(AwsBasicCredentials.create(this.s3Access.getAccessKey(), this.s3Access.getSecretKey()));
+		} else {
+			awsCredentialsProvider = ProfileCredentialsProvider.create(this.s3Access.getProfileName());
+		}
+		
+        return S3Client.builder()
+			        	   .httpClient(sdkHttpClient)
+			        	   .credentialsProvider(awsCredentialsProvider)
+			        	   .region(this.s3Access.getRegion())
+		        	   .build();
 	}
 	
 	public void setS3Access(S3Access s3Access) {

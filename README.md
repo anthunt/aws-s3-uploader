@@ -17,8 +17,8 @@
 
 ## Execution
 
-- **Running Command :** <code>java -jar s3-uploader-\[yyyyMMddHHmiss\].jar \[options\]</code>   
-- **options :**   
+* **Running Command :** <code>java -jar s3-uploader-\[yyyyMMddHHmiss\].jar \[options\]</code>   
+* **options :**   
 
 `-help` : Option help   
 `-conf <directory>` : Change configuration file directory path   
@@ -38,7 +38,7 @@
 5. todayFormat   
 6. proxy    
 
-- Full configuration - <code>File Name : s3.uploader.json or s3.uploader.\[serverType\].json</code>   
+* Full configuration - <code>File Name : s3.uploader.json or s3.uploader.\[serverType\].json</code>   
 
 <pre>
 	{

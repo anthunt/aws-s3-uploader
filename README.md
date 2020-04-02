@@ -12,10 +12,10 @@
 - 4. Structure after extracting zip file
 
 >>
-- s3-uploader-[yyyyMMddHHmiss].jar :** jar for running s3-uploader
-- run.sh :** Sample run shell script
-- config :** log4j2, s3.uploader preference file directory
-- lib :** Reference library jar file directory when executing s3-uploader (program is not recognized when changing)
+- **s3-uploader-[yyyyMMddHHmiss].jar :** jar for running s3-uploader
+- **run.sh :** Sample run shell script
+- **config :** log4j2, s3.uploader preference file directory
+- **lib :** Reference library jar file directory when executing s3-uploader (program is not recognized when changing)
 
 # Execution
 

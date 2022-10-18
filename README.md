@@ -2,15 +2,23 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/11e91acf2571415bb21bd3ce9ae08638)](https://www.codacy.com/gh/anthunt/aws-s3-uploader/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=anthunt/aws-s3-uploader&amp;utm_campaign=Badge_Grade)
 ![Maven Package](https://github.com/anthunt/aws-s3-uploader/workflows/Maven%20Package/badge.svg)
+
 ---
+
 AWS has an Object storage service called S3.
+
 You can implement it for each program by using the SDK directly in the application, but there may be situations where you simply need to periodically upload a file from somewhere to S3.
+
 You can also upload files through log collectors such as Filebeat and fluentD. However, log collectors are designed to be limitedly used for text files.
 So, I needed an S3 upload module that could work with any type of file, so I made s3-uploader.
+
 In addition, in the case of S3, it is necessary to know when the writing of the file is completed in order to upload a complete file because it works only in the unit of object of the file.
+
 s3-uploader uses the MD5 file to know when the file write is complete.
 When writing a file is completed, an MD5 file is created for the file, and it notifies s3-uploader of the completion of writing the file so that it can recognize that the file has been uploaded.
+
 ---
+
 ## Deploy
 
 1. pom.xml : run <code>maven install</code>   

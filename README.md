@@ -1,7 +1,6 @@
 # s3-uploader Configuration Guide
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/11e91acf2571415bb21bd3ce9ae08638)](https://www.codacy.com/gh/anthunt/aws-s3-uploader/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=anthunt/aws-s3-uploader&amp;utm_campaign=Badge_Grade)
-[![Build Status](https://travis-ci.org/anthunt/aws-s3-uploader.svg?branch=master)](https://travis-ci.org/anthunt/aws-s3-uploader)
 ![Maven Package](https://github.com/anthunt/aws-s3-uploader/workflows/Maven%20Package/badge.svg)
 
 ## Deploy

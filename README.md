@@ -21,40 +21,40 @@ When writing a file is completed, an MD5 file is created for the file, and it no
 
 ## Deploy
 
-1. pom.xml : run <code>maven install</code>   
-2. Confirm creation of <code>s3-uploader-\[yyyyMMddHHmiss\].zip</code> file in target directory  
-3. Extract and use the generated zip file in the path you want to run   
-4. Structure after extracting zip file   
+ 1. pom.xml : run <code>maven install</code>   
+ 2. Confirm creation of <code>s3-uploader-\[yyyyMMddHHmiss\].zip</code> file in target directory  
+ 3. Extract and use the generated zip file in the path you want to run   
+ 	4. Structure after extracting zip file   
 
-* **<code>s3-uploader-\[yyyyMMddHHmiss\].jar</code> :** jar for running s3-uploader   
-* **run.sh :** Sample run shell script   
-* **config :** log4j2, s3.uploader preference file directory   
-* **lib :** Reference library jar file directory when executing s3-uploader (program is not recognized when changing)   
+  * **<code>s3-uploader-\[yyyyMMddHHmiss\].jar</code> :** jar for running s3-uploader   
+  * **run.sh :** Sample run shell script   
+  * **config :** log4j2, s3.uploader preference file directory   
+  * **lib :** Reference library jar file directory when executing s3-uploader (program is not recognized when changing)   
 
 ## Execution
 
-* **Running Command :** <code>java -jar s3-uploader-\[yyyyMMddHHmiss\].jar \[options\]</code>   
-* **options :**   
+  * **Running Command :** <code>java -jar s3-uploader-\[yyyyMMddHHmiss\].jar \[options\]</code>   
+  * **options :**   
 
 `-help` : Option help   
 `-conf <directory>` : Change configuration file directory path   
 `-service <serviceName>` : If the name of service to be executed is not entered, service is not performed   
 `-serverType <server type>` : Separator for configuration file branches   
 
-* When executed, the logs directory is created in the execution location and log files are saved. (Can be changed in log4j2.xml settings)   
+  * When executed, the logs directory is created in the execution location and log files are saved. (Can be changed in log4j2.xml settings)   
 
 ## JSON Settings Description
 
-* Optional configuration     
+  * Optional configuration     
 
-1. uploadDirectory    
-2. completeDirectory   
-3. useMD5CheckSum   
-4. deleteCompleted     
-5. todayFormat   
-6. proxy    
+ 1. uploadDirectory    
+ 2. completeDirectory   
+ 3. useMD5CheckSum   
+ 4. deleteCompleted     
+ 5. todayFormat   
+ 6. proxy    
 
-* Full configuration - <code>File Name : s3.uploader.json or s3.uploader.\[serverType\].json</code>   
+  * Full configuration - <code>File Name : s3.uploader.json or s3.uploader.\[serverType\].json</code>   
 
 <pre>
 	{
@@ -95,5 +95,5 @@ When writing a file is completed, an MD5 file is created for the file, and it no
 
 ## Logging configuration
  
-* Set to <code>"File Name : log4j2.xml or log4j2.\[serverType\].xml"</code> file under config path.   
-* If there is no log setting under the config path, the default log4j2.xml setting set in the jar program is used.   
+ * Set to <code>"File Name : log4j2.xml or log4j2.\[serverType\].xml"</code> file under config path.   
+ * If there is no log setting under the config path, the default log4j2.xml setting set in the jar program is used.   
